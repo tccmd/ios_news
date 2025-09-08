@@ -29,7 +29,7 @@ class _ArticlePageState extends State<ArticlePage>
     // TODO: implement initState
     super.initState();
     _controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 400));
+        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     _appBarOffset = Tween<Offset>(begin: Offset.zero, end: Offset(0, -1))
         .animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
     _navBarOffset = Tween<Offset>(begin: Offset.zero, end: Offset(0, 1))

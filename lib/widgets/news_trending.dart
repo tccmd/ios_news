@@ -4,11 +4,13 @@ import 'package:ios_news/themes/app_theme.dart';
 import 'package:ios_news/widgets/news_widget_title.dart';
 
 class NewsTrending extends StatelessWidget {
-  const NewsTrending({super.key});
+  final GlobalKey sectionKey;
+  const NewsTrending({super.key, required this.sectionKey});
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      key: sectionKey,
       padding: EdgeInsets.only(top: context.spacing40),
       decoration: BoxDecoration(color: context.bg2),
       child: Column(

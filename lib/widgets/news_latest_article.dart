@@ -6,11 +6,13 @@ import 'package:ios_news/themes/app_theme.dart';
 import 'package:ios_news/widgets/news_widget_title.dart';
 
 class NewsLatestArticle extends StatelessWidget {
-  const NewsLatestArticle({super.key});
+  final GlobalKey sectionKey;
+  const NewsLatestArticle({super.key, required this.sectionKey});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
+      key: sectionKey,
       padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
       child: Column(
           spacing: context.spacing20,
@@ -43,7 +45,14 @@ class CardVertical extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => ArticlePage()));
+        // Navigator.push(context, MaterialPageRoute(builder: (context) => ArticlePage()));
+        Navigator.push(context, PageRouteBuilder(
+            transitionDuration: const Duration(milliseconds: 200),
+            pageBuilder: (context, animation, secondaryAnimation) => const ArticlePage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+        ));
       },
       child: SizedBox(
         width: 150,

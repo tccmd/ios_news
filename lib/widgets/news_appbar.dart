@@ -4,8 +4,9 @@ import 'package:ios_news/widgets/news_tab_bar.dart';
 
 class NewsAppbar extends StatefulWidget {
   final double offset;
+  final TabController? tabController;
 
-  const NewsAppbar({super.key, required this.offset});
+  const NewsAppbar({super.key, required this.offset, this.tabController});
 
   @override
   State<NewsAppbar> createState() => _NewsAppbarState();
@@ -38,7 +39,7 @@ class _NewsAppbarState extends State<NewsAppbar> {
             duration: const Duration(milliseconds: 300),
             height: isScrolled ? 2 : 10,
           ),
-          NewsTabBar(),
+          NewsTabBar(tabController: widget.tabController),
         ],
       ),
     );

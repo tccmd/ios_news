@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:ios_news/themes/app_theme.dart';
 
 class NewsTabBar extends StatelessWidget {
-  const NewsTabBar({super.key});
+  final TabController? tabController;
+  const NewsTabBar({super.key, this.tabController});
 
   @override
   Widget build(BuildContext context) {
@@ -11,6 +12,7 @@ class NewsTabBar extends StatelessWidget {
       // width: 173,
       height: 16 + 4 + 10,
       child: TabBar(
+          controller: tabController,
           indicatorSize: TabBarIndicatorSize.label,
           indicator: BoxDecoration(
               border:

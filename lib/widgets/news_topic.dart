@@ -5,11 +5,13 @@ import 'package:ios_news/themes/app_theme.dart';
 import 'package:ios_news/widgets/news_widget_title.dart';
 
 class NewsTopic extends StatelessWidget {
-  const NewsTopic({super.key});
+  final GlobalKey sectionKey;
+  const NewsTopic({super.key, required this.sectionKey});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
+      key: sectionKey,
       padding: EdgeInsets.fromLTRB(0, 50, 0, 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
