@@ -11,16 +11,18 @@ class NewsTabBar extends StatelessWidget {
       // width: 173,
       height: 16 + 4 + 10,
       child: TabBar(
+          indicatorSize: TabBarIndicatorSize.label,
           indicator: BoxDecoration(
               border:
                   Border(bottom: BorderSide(color: context.accent, width: 2))),
           padding: EdgeInsets.zero,
           indicatorPadding: EdgeInsets.zero,
           labelPadding: EdgeInsets.only(right: 16),
+          // labelPadding: EdgeInsets.zero,
           dividerHeight: 0,
           isScrollable: true,
           tabAlignment: TabAlignment.start,
-          indicatorAnimation: TabIndicatorAnimation.linear,
+          // indicatorAnimation: TabIndicatorAnimation.linear,
           tabs: const <Widget>[
             Tab(text: '최신'),
             Tab(text: '트렌딩'),

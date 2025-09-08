@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ios_news/models/article.dart';
+import 'package:ios_news/pages/article_page.dart';
 import 'package:ios_news/themes/app_theme.dart';
 import 'package:ios_news/widgets/news_widget_title.dart';
 
@@ -42,7 +43,7 @@ class CardVertical extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ArticlePage()));
       },
       child: SizedBox(
         width: 150,

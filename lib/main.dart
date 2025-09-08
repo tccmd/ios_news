@@ -33,8 +33,6 @@ class MyApp extends StatelessWidget {
           // indicator: BoxDecoration(border: Border.all()),
           overlayColor: WidgetStatePropertyAll(Colors.transparent),
           // tabAlignment: TabAlignment.start,
-          labelPadding: EdgeInsets.zero,
-          indicatorSize: TabBarIndicatorSize.label,
         ),
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
