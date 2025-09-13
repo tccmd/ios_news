@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:ios_news/themes/app_theme.dart';
 
-class NewsTabBar extends StatelessWidget {
-  final TabController? tabController;
-  const NewsTabBar({super.key, this.tabController});
+class NewsDiscoveryTabBar extends StatelessWidget {
+  final TabController tabController;
+  const NewsDiscoveryTabBar({super.key, required this.tabController});
 
   @override
   Widget build(BuildContext context) {

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ios_news/models/article.dart';
 import 'package:ios_news/pages/article_page.dart';
+import 'package:ios_news/providers/app_nav_bar_animating.dart';
 import 'package:ios_news/themes/app_theme.dart';
 import 'package:ios_news/widgets/news_widget_title.dart';
 
@@ -36,16 +38,18 @@ class NewsLatestArticle extends StatelessWidget {
   }
 }
 
-class CardVertical extends StatelessWidget {
+class CardVertical extends ConsumerWidget {
   final Article article;
 
   const CardVertical({super.key, required this.article});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isAppNavBarAnimating = ref.watch(appNavBarAnimatingProvider);
+
     return GestureDetector(
       onTap: () {
-        // Navigator.push(context, MaterialPageRoute(builder: (context) => ArticlePage()));
+        // Navigator.pushNamed(context, '/article');
         Navigator.push(context, PageRouteBuilder(
             transitionDuration: const Duration(milliseconds: 200),
             pageBuilder: (context, animation, secondaryAnimation) => const ArticlePage(),
@@ -53,6 +57,7 @@ class CardVertical extends StatelessWidget {
               return FadeTransition(opacity: animation, child: child);
             },
         ));
+        ref.read(appNavBarAnimatingProvider.notifier).trigger();
       },
       child: SizedBox(
         width: 150,

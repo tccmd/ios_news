@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:ios_news/themes/app_theme.dart';
-import 'package:ios_news/widgets/news_tab_bar.dart';
 
 class NewsAppbar extends StatefulWidget {
   final double offset;
   final TabController? tabController;
+  final Widget? tabBar;
 
-  const NewsAppbar({super.key, required this.offset, this.tabController});
+  const NewsAppbar({super.key, required this.offset, this.tabController, this.tabBar});
 
   @override
   State<NewsAppbar> createState() => _NewsAppbarState();
@@ -29,6 +29,7 @@ class _NewsAppbarState extends State<NewsAppbar> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
         children: [
           AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 300),
@@ -39,7 +40,7 @@ class _NewsAppbarState extends State<NewsAppbar> {
             duration: const Duration(milliseconds: 300),
             height: isScrolled ? 2 : 10,
           ),
-          NewsTabBar(tabController: widget.tabController),
+          widget.tabBar ?? SizedBox.shrink(),
         ],
       ),
     );
