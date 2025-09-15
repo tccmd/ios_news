@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ios_news/models/article.dart';
 import 'package:ios_news/themes/app_theme.dart';
+import 'package:ios_news/widgets/go_article_widget.dart';
 import 'package:ios_news/widgets/news_widget_title.dart';
 
 class NewsTrending extends StatelessWidget {
@@ -34,23 +35,26 @@ class CardHorizon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: context.spacing10, horizontal: context.spacing20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                  width: 235,
-                  child: Text(article.title ?? '', style: context.koHeadline4)),
-              SizedBox(height: 4),
-              Text(article.metaText ?? '', style: context.koCaption2),
-            ],
-          ),
-          Image.asset(article.imgPath ?? '', width: 70),
-        ],
+    return GoArticleWidget(
+      article: article,
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: context.spacing10, horizontal: context.spacing20),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                    width: 235,
+                    child: Text(article.title ?? '', style: context.koHeadline4)),
+                SizedBox(height: 4),
+                Text(article.metaText ?? '', style: context.koCaption2),
+              ],
+            ),
+            Image.asset(article.imgPath ?? '', width: 70),
+          ],
+        ),
       ),
     );
   }

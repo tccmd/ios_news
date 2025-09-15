@@ -21,20 +21,20 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'iOS News App',
       initialRoute: '/',
-      onGenerateRoute: (settings) {
-        if (settings.name == '/article') {
-          return PageRouteBuilder(pageBuilder: (context, animation, secondaryAnimation) => const ArticlePage(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child,);
-          },
-            transitionDuration: const Duration(milliseconds: 200),
-          );
-        }
-        return null;
-      },
+      // onGenerateRoute: (settings) {
+      //   if (settings.name == '/article') {
+      //     return PageRouteBuilder(pageBuilder: (context, animation, secondaryAnimation) => const ArticlePage(),
+      //     transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      //       return FadeTransition(opacity: animation, child: child,);
+      //     },
+      //       transitionDuration: const Duration(milliseconds: 200),
+      //     );
+      //   }
+      //   return null;
+      // },
       routes: {
         '/': (context) => const NewsMainScaffold(),
-        '/article': (context) => const ArticlePage(),
+        // '/article': (context) => const ArticlePage(),
       },
       theme: ThemeData(
         primaryColor: context.accent,

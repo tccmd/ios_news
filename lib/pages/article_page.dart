@@ -8,7 +8,8 @@ import 'package:ios_news/themes/app_theme.dart';
 import '../providers/app_nav_bar_animating.dart';
 
 class ArticlePage extends ConsumerStatefulWidget {
-  const ArticlePage({super.key});
+  final Article article;
+  const ArticlePage({super.key, required this.article});
 
   @override
   ConsumerState<ArticlePage> createState() => _ArticlePageState();
@@ -16,32 +17,6 @@ class ArticlePage extends ConsumerStatefulWidget {
 
 class _ArticlePageState extends ConsumerState<ArticlePage>
     with SingleTickerProviderStateMixin {
-  final Article article = Article(
-      imgPath: 'assets/imgs/latest_3.png',
-      title: '경험을 사고파는 것이 4차 산업혁명의 가능자',
-      description: '대통령은 취임에 즈음하여 다음의 선서를 한다. 대통령은 조국의 평화적 통일을 위한 성실... ');
-
-  // 시트, 글자 애니메이션
-  double _top = 370;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    // 페이지가 렌더링 된 후 애니메이션 시작
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        _top = 220;
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-  }
 
   void _handleClose() async {
     // 앱바, 네비바 다시 원래 자리로 애니메이션
@@ -59,16 +34,9 @@ class _ArticlePageState extends ConsumerState<ArticlePage>
           children: [
             SizedBox(
                 height: 240,
-                child: Image.asset(article.imgPath ?? '',
+                child: Image.asset(widget.article.imgPath ?? '',
                     width: double.infinity, fit: BoxFit.cover)),
-            // AnimatedPositioned(
-            //     duration: const Duration(milliseconds: 200),
-            //     curve: Curves.easeInOut,
-            //     left: 0,
-            //     right: 0,
-            //     top: _top,
-            //     child: NewsArticleSheet(article: article)),
-            NewsArticleSheet(article: article),
+            NewsArticleSheet(article: widget.article),
             CloseButton(onPressed: _handleClose),
           ],
         ),
@@ -88,9 +56,12 @@ class NewsArticleSheet extends StatefulWidget {
 class _NewsArticleSheetState extends State<NewsArticleSheet> with
  TickerProviderStateMixin {
 
+  double _sheetHeight = 592;
+
   // 시트, 타이틀, 텍스트 순차 애니메이션
   late AnimationController _sheetController;
   late Animation<double> _sheetOffset;
+  late Animation<double> _sheetOpacity;
 
   late AnimationController _titlesController;
   late Animation<double> _titlesOffset;
@@ -100,6 +71,10 @@ class _NewsArticleSheetState extends State<NewsArticleSheet> with
   late Animation<double> _textOffset;
   late Animation<double> _textOpacity;
 
+  double _dragOffset = 0; // 드래그 상태를저장
+
+  bool _isFullScreen = false; // 풀스크린 상태 저장
+
   @override
   void initState() {
     // TODO: implement initState
@@ -108,24 +83,26 @@ class _NewsArticleSheetState extends State<NewsArticleSheet> with
     // 1️⃣ Sheet 애니메이션
     _sheetController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 300));
-    _sheetOffset = Tween<double>(begin: 370, end: 220).animate(
-        CurvedAnimation(parent: _sheetController, curve: Curves.easeOut));
+    _sheetOffset = Tween<double>(begin: 250, end: 220).animate(
+        CurvedAnimation(parent: _sheetController, curve: Curves.easeInOut));
+    _sheetOpacity = Tween<double>(begin: 1, end: 1).animate(
+        CurvedAnimation(parent: _sheetController, curve: Curves.easeInOut));
 
     // 2️⃣ Titles 애니메이션
     _titlesController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 300));
     _titlesOffset = Tween<double>(begin: 50, end: 0).animate(
-        CurvedAnimation(parent: _titlesController, curve: Curves.easeOut));
+        CurvedAnimation(parent: _titlesController, curve: Curves.easeInOut));
     _titlesOpacity = Tween<double>(begin: 0, end: 1).animate(
-        CurvedAnimation(parent: _titlesController, curve: Curves.easeIn));
+        CurvedAnimation(parent: _titlesController, curve: Curves.easeInOut));
 
     // 3️⃣ Text 애니메이션
     _textController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 300));
     _textOffset = Tween<double>(begin: 50, end: 0).animate(
-        CurvedAnimation(parent: _textController, curve: Curves.easeOut));
+        CurvedAnimation(parent: _textController, curve: Curves.easeInOut));
     _textOpacity = Tween<double>(begin: 0, end: 1).animate(
-        CurvedAnimation(parent: _textController, curve: Curves.easeIn));
+        CurvedAnimation(parent: _textController, curve: Curves.easeInOut));
 
     // 순차 실행
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -149,62 +126,111 @@ class _NewsArticleSheetState extends State<NewsArticleSheet> with
     return AnimatedBuilder(
       animation: _sheetController,
       builder: (context, child) {
-        return Transform.translate(offset: Offset(0, _sheetOffset.value),
-        child:  Container(
-          decoration: BoxDecoration(
-            // border: Border.all(),
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-            color: context.bg1,
-            boxShadow: [
-              BoxShadow(
-                color: context.black10,
-                offset: const Offset(0, 0),
-                blurRadius: 8,
-                spreadRadius: 0,
-              ),
-            ],
-          ),
-          height: 592,
-          padding: EdgeInsets.fromLTRB(
-              context.spacing20, context.spacing30, context.spacing20, 0),
-          // margin: EdgeInsets.only(top: 220),
-          child: SingleChildScrollView(
+        // double totalOffset = _sheetOffset.value + _dragOffset; // 애니메이션 + 드래그 합산
+
+        return Opacity(
+          opacity: _sheetOpacity.value,
+          child: Transform.translate(offset: Offset(0, _sheetOffset.value),
+          child:  GestureDetector(
+            onVerticalDragUpdate: (details) {
+              setState(() {
+                // _dragOffset += details.delta.dy;
+                // 아래로는 못 내리게 제한
+                if (_dragOffset > 0) _dragOffset = 0;
+              });
+            },
+            onVerticalDragEnd: (details) {
+              // if (_dragOffset < 0) _animateToFullScreen();
+              _animateToFullScreen();
+            },
+            onTap: _animateToFullScreen,
             child: Container(
-              decoration: BoxDecoration(border: Border.all()),
-              child: Column(
-                children: [
-                  AnimatedBuilder(
-                      animation: _titlesController,
-                      builder: (context, child) {
-                        return Opacity(opacity: _titlesOpacity.value,
-                          child: Transform.translate(offset: Offset(0, _titlesOffset.value),
-                          child: child,
-                          )
-                        );
-                      },
-                    child: ArticleSheetTitles(article: widget.article),
-                  ),
-                  AnimatedBuilder(
-                    animation: _textController,
-                    builder: (context, child) {
-                      return Opacity(opacity: _textOpacity.value,
-                        child: Transform.translate(offset: Offset(0, _textOffset.value),
-                        child: child,
-                        ),
-                      );
-                    },
-                    child: Text(loremIpsumKo),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+                color: context.bg1,
+                boxShadow: [
+                  BoxShadow(
+                    color: context.black10,
+                    offset: const Offset(0, 0),
+                    blurRadius: 8,
+                    spreadRadius: 0,
                   ),
                 ],
               ),
+              height: _sheetHeight,
+              padding: EdgeInsets.fromLTRB(
+                  context.spacing20, context.spacing30, context.spacing20, 0),
+              // margin: EdgeInsets.only(top: 220),
+              child: SingleChildScrollView(
+                child: Column(
+                  spacing: context.spacing20,
+                  children: [
+                    // ...List.generate(40, (index) => Text('text$index'),),
+                    AnimatedBuilder(
+                        animation: _titlesController,
+                        builder: (context, child) {
+                          return Opacity(opacity: _titlesOpacity.value,
+                            child: Transform.translate(offset: Offset(0, _titlesOffset.value),
+                            child: child,
+                            )
+                          );
+                        },
+                      child: ArticleSheetTitles(article: widget.article),
+                    ),
+                    AnimatedBuilder(
+                      animation: _textController,
+                      builder: (context, child) {
+                        return Opacity(opacity: _textOpacity.value,
+                          child: Transform.translate(offset: Offset(0, _textOffset.value),
+                          child: child,
+                          ),
+                        );
+                      },
+                      child: Text(loremIpsumKo),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
+          ),
         );
       },
     );
   }
+
+  void _animateToFullScreen() {
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    // 현재 상태에 따라 목표 offset과 height 결정
+    final double targetOffset = _isFullScreen ? 220.0 : 0.0;   // 원래 위치 220, 풀스크린 0
+    final double targetHeight = _isFullScreen ? 592.0 : screenHeight; // 원래 높이 592, 풀스크린 화면 높이
+
+    final startOffset = _sheetOffset.value;
+    final startHeight = _sheetHeight;
+
+    final controller = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 300));
+
+    final offsetAnim = Tween<double>(begin: startOffset, end: targetOffset)
+        .animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
+    final heightAnim = Tween<double>(begin: startHeight, end: targetHeight)
+        .animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut));
+
+    controller.addListener(() {
+      setState(() {
+        _sheetOffset = AlwaysStoppedAnimation(offsetAnim.value);
+        _sheetHeight = heightAnim.value;
+      });
+    });
+
+    controller.forward().whenComplete(() {
+      controller.dispose();
+      _isFullScreen = !_isFullScreen; // 상태 토글
+    });
+  }
+
 }
 
 
@@ -214,7 +240,7 @@ class ArticleSheetTitles extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return             Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: context.spacing10,
       children: [

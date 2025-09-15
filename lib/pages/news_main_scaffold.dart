@@ -150,11 +150,11 @@ class _NewsMainScaffoldState extends ConsumerState<NewsMainScaffold>
       newIndex = 0;
     }
 
-    _tabController.index = newIndex;
+    // _tabController.index = newIndex;
 
-    // if (_tabController.index != newIndex) {
-    //   _tabController.animateTo(newIndex);
-    // }
+    if (_tabController.index != newIndex) {
+      _tabController.animateTo(newIndex);
+    }
   }
 
   void _triggerAppBarNavAnimation() {
@@ -194,15 +194,18 @@ class _NewsMainScaffoldState extends ConsumerState<NewsMainScaffold>
     return Scaffold(
       body: Stack(
         children: [
+          // 각 페이지
           Padding(
             padding: EdgeInsets.only(top: offset > 0 ? 106 : 146),
-            child: SingleChildScrollView(
+            child: _currentIndex == 1 ? SingleChildScrollView(
               controller: _scrollController,
               child: _pages[_currentIndex],
-            ),
+            ) : _pages[_currentIndex],
           ),
+          // 앱바
           SlideTransition(
               position: _appBarOffset, child: NewsAppbar(offset: offset, tabBar: _tabBars[_currentIndex])),
+          // 바텀 네비바
           Align(
               alignment: Alignment.bottomCenter,
               child: SlideTransition(position: _navBarOffset, child: NewsNav(selectedIndex: _currentIndex, onTab: _onNavTap,),)),

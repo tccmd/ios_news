@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:ios_news/models/article.dart';
 import 'package:ios_news/themes/app_theme.dart';
+import 'package:ios_news/widgets/go_article_widget.dart';
 import 'package:ios_news/widgets/news_widget_title.dart';
 
 class NewsTopic extends StatelessWidget {
@@ -12,7 +13,7 @@ class NewsTopic extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       key: sectionKey,
-      padding: EdgeInsets.fromLTRB(0, 50, 0, 20),
+      padding: EdgeInsets.fromLTRB(0, 50, 0, 20 + 84 + 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -42,17 +43,20 @@ class CardVertical extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 220,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image.asset(article.imgPath ?? ''),
-          SizedBox(height: 12),
-          Text(article.category ?? '', style: context.koOverLine),
-          SizedBox(height: 6),
-          Text(article.title ?? '', style: context.koHeadline5),
-        ],
+    return GoArticleWidget(
+      article: article,
+      child: SizedBox(
+        width: 220,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Image.asset(article.imgPath ?? ''),
+            SizedBox(height: 12),
+            Text(article.category ?? '', style: context.koOverLine),
+            SizedBox(height: 6),
+            Text(article.title ?? '', style: context.koHeadline5),
+          ],
+        ),
       ),
     );
   }

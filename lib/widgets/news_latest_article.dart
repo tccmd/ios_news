@@ -5,6 +5,7 @@ import 'package:ios_news/models/article.dart';
 import 'package:ios_news/pages/article_page.dart';
 import 'package:ios_news/providers/app_nav_bar_animating.dart';
 import 'package:ios_news/themes/app_theme.dart';
+import 'package:ios_news/widgets/go_article_widget.dart';
 import 'package:ios_news/widgets/news_widget_title.dart';
 
 class NewsLatestArticle extends StatelessWidget {
@@ -45,20 +46,8 @@ class CardVertical extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isAppNavBarAnimating = ref.watch(appNavBarAnimatingProvider);
-
-    return GestureDetector(
-      onTap: () {
-        // Navigator.pushNamed(context, '/article');
-        Navigator.push(context, PageRouteBuilder(
-            transitionDuration: const Duration(milliseconds: 200),
-            pageBuilder: (context, animation, secondaryAnimation) => const ArticlePage(),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              return FadeTransition(opacity: animation, child: child);
-            },
-        ));
-        ref.read(appNavBarAnimatingProvider.notifier).trigger();
-      },
+    return GoArticleWidget(
+      article: article,
       child: SizedBox(
         width: 150,
         child: Column(
